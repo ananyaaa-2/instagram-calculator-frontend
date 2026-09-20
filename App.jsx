@@ -23,7 +23,7 @@ function App() {
   const getNumber = (...values) => {
     for (const value of values) {
       if (value !== undefined && value !== null && value !== "") {
-        const number = Number(value);
+        const number = Number(value); 
 
         if (!Number.isNaN(number)) {
           return number;
