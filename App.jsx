@@ -12,7 +12,9 @@ function App() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
 
-  const API_URL = "https://instagram-calculator-backend.onrender.com";
+  // IMPORTANT: Render backend URL
+  const API_URL =
+    "https://instagram-calculator-backend.onrender.com";
 
   // ============================================
   // HELPERS
@@ -53,18 +55,12 @@ function App() {
       data?.followers,
       data?.follower_count,
       data?.followers_count,
-
       data?.data?.followers,
       data?.data?.follower_count,
       data?.data?.followers_count,
-
       data?.user?.followers,
       data?.user?.follower_count,
-      data?.user?.followers_count,
-
-      data?.data?.user?.followers,
-      data?.data?.user?.follower_count,
-      data?.data?.user?.followers_count
+      data?.user?.followers_count
     );
   };
 
@@ -74,21 +70,14 @@ function App() {
       data?.posts_count,
       data?.post_count,
       data?.media_count,
-
       data?.data?.posts,
       data?.data?.posts_count,
       data?.data?.post_count,
       data?.data?.media_count,
-
       data?.user?.posts,
       data?.user?.posts_count,
       data?.user?.post_count,
-      data?.user?.media_count,
-
-      data?.data?.user?.posts,
-      data?.data?.user?.posts_count,
-      data?.data?.user?.post_count,
-      data?.data?.user?.media_count
+      data?.user?.media_count
     );
   };
 
@@ -192,7 +181,6 @@ function App() {
       post?.likes,
       post?.likes_count,
       post?.edge_media_preview_like?.count,
-
       post?.data?.like_count,
       post?.data?.likes,
       post?.data?.likes_count,
@@ -210,7 +198,6 @@ function App() {
       post?.comments,
       post?.comments_count,
       post?.edge_media_to_comment?.count,
-
       post?.data?.comment_count,
       post?.data?.comments,
       post?.data?.comments_count,
@@ -219,7 +206,7 @@ function App() {
   };
 
   // ============================================
-  // VIEWS / PLAYS
+  // VIEWS
   // ============================================
 
   const getViews = (post) => {
@@ -229,7 +216,6 @@ function App() {
       post?.play_count,
       post?.plays,
       post?.video_view_count,
-
       post?.data?.view_count,
       post?.data?.views,
       post?.data?.play_count,
@@ -247,7 +233,6 @@ function App() {
       post?.save_count,
       post?.saves,
       post?.saved_count,
-
       post?.data?.saved,
       post?.data?.save_count,
       post?.data?.saves,
@@ -265,7 +250,6 @@ function App() {
       post?.repost_count,
       post?.reposts_count,
       post?.share_count,
-
       post?.data?.reposts,
       post?.data?.repost_count,
       post?.data?.reposts_count,
@@ -359,7 +343,6 @@ function App() {
     }
 
     const sorted = [...values].sort((a, b) => a - b);
-
     const middle = Math.floor(sorted.length / 2);
 
     if (sorted.length % 2 === 0) {
@@ -388,38 +371,22 @@ function App() {
     }
 
     const likes = analyticsPosts.map((post) => getLikes(post));
-
     const comments = analyticsPosts.map((post) => getComments(post));
-
     const views = analyticsPosts.map((post) => getViews(post));
 
-    const totalLikes = likes.reduce(
-      (sum, value) => sum + value,
-      0
-    );
-
-    const averageLikes = totalLikes / likes.length;
-
-    const totalComments = comments.reduce(
-      (sum, value) => sum + value,
-      0
-    );
+    const averageLikes =
+      likes.reduce((sum, value) => sum + value, 0) / likes.length;
 
     const averageComments =
-      totalComments / comments.length;
+      comments.reduce((sum, value) => sum + value, 0) /
+      comments.length;
 
-    const validViews = views.filter(
-      (value) => value > 0
-    );
-
-    const totalViews = validViews.reduce(
-      (sum, value) => sum + value,
-      0
-    );
+    const validViews = views.filter((value) => value > 0);
 
     const averageViews =
       validViews.length > 0
-        ? totalViews / validViews.length
+        ? validViews.reduce((sum, value) => sum + value, 0) /
+          validViews.length
         : 0;
 
     const medianLikes = getMedian(likes);
@@ -447,9 +414,7 @@ function App() {
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    const cleanUsername = username
-      .trim()
-      .replace(/^@+/, "");
+    const cleanUsername = username.trim().replace(/^@+/, "");
 
     if (!cleanUsername) {
       setError("Please enter an Instagram username.");
@@ -466,9 +431,7 @@ function App() {
     try {
       // PROFILE
       const profileResponse = await fetch(
-        `${API_URL}/api/instagram/${encodeURIComponent(
-          cleanUsername
-        )}`
+        `${API_URL}/api/instagram/${encodeURIComponent(cleanUsername)}`
       );
 
       const profileData = await profileResponse.json();
@@ -512,16 +475,11 @@ function App() {
         postsData?.data?.posts ||
         [];
 
-      const firstPosts = Array.isArray(items)
-        ? items
-        : [];
+      const firstPosts = Array.isArray(items) ? items : [];
 
       setPosts(firstPosts);
-
-      // Metrics use only first page
       setAnalyticsPosts(firstPosts);
 
-      // Cursor
       setNextCursor(
         postsData?.next_cursor ||
           postsData?.data?.next_cursor ||
@@ -533,8 +491,7 @@ function App() {
       console.error("Instagram API Error:", error);
 
       setError(
-        error?.message ||
-          "Unable to fetch Instagram data."
+        error?.message || "Unable to fetch Instagram data."
       );
     } finally {
       setLoading(false);
@@ -550,9 +507,7 @@ function App() {
       return;
     }
 
-    const cleanUsername = username
-      .trim()
-      .replace(/^@+/, "");
+    const cleanUsername = username.trim().replace(/^@+/, "");
 
     if (!cleanUsername) {
       return;
@@ -565,9 +520,7 @@ function App() {
       const response = await fetch(
         `${API_URL}/api/instagram/${encodeURIComponent(
           cleanUsername
-        )}/posts?cursor=${encodeURIComponent(
-          nextCursor
-        )}`
+        )}/posts?cursor=${encodeURIComponent(nextCursor)}`
       );
 
       const data = await response.json();
@@ -591,13 +544,10 @@ function App() {
         ? newItems
         : [];
 
-      // Only displayed posts change
       setPosts((previousPosts) => [
         ...previousPosts,
         ...validNewPosts,
       ]);
-
-      // analyticsPosts intentionally NOT changed
 
       setNextCursor(
         data?.next_cursor ||
@@ -610,8 +560,7 @@ function App() {
       console.error("Load More Error:", error);
 
       setError(
-        error?.message ||
-          "Unable to load more posts."
+        error?.message || "Unable to load more posts."
       );
     } finally {
       setLoadingMore(false);
@@ -651,9 +600,7 @@ function App() {
     getProfileName(profile) || displayUsername;
 
   const profileBio = getProfileBio(profile);
-
-  const profilePostsCount =
-    getProfilePostsCount(profile);
+  const profilePostsCount = getProfilePostsCount(profile);
 
   // ============================================
   // UI
@@ -662,7 +609,6 @@ function App() {
   return (
     <div className="app">
 
-      {/* HEADER */}
       <header className="header">
         <div className="container header-content">
           <div className="logo">
@@ -673,19 +619,16 @@ function App() {
 
       <main>
 
-        {/* PAGE TITLE */}
         <section className="page-header">
           <div className="container">
             <h1>Instagram Engagement Calculator</h1>
-
             <p>
-              Analyze an Instagram profile and
-              calculate its engagement rate.
+              Analyze an Instagram profile and calculate its
+              engagement rate.
             </p>
           </div>
         </section>
 
-        {/* SEARCH */}
         <section className="search-section container">
           <form
             className="search-box"
@@ -696,46 +639,30 @@ function App() {
               placeholder="@username"
               value={username}
               disabled={loading}
-              onChange={(e) =>
-                setUsername(e.target.value)
-              }
+              onChange={(e) => setUsername(e.target.value)}
             />
 
-            <button
-              type="submit"
-              disabled={loading}
-            >
-              {loading
-                ? "Analyzing..."
-                : "Calculate"}
+            <button type="submit" disabled={loading}>
+              {loading ? "Analyzing..." : "Calculate"}
             </button>
           </form>
         </section>
 
-        {/* ERROR */}
         {error && (
           <div className="container">
-            <div className="error">
-              {error}
-            </div>
+            <div className="error">{error}</div>
           </div>
         )}
 
-        {/* LOADING */}
         {loading && (
           <div className="loading">
             <div className="loader"></div>
-
-            <p>
-              Fetching Instagram data...
-            </p>
+            <p>Fetching Instagram data...</p>
           </div>
         )}
 
-        {/* RESULTS */}
         {profile && !loading && (
           <>
-            {/* PROFILE */}
             <section className="container profile-section">
               <div className="profile-card-new">
 
@@ -749,14 +676,11 @@ function App() {
                     />
                   ) : (
                     <div className="profile-placeholder-new">
-                      {displayUsername
-                        .charAt(0)
-                        .toUpperCase()}
+                      {displayUsername.charAt(0).toUpperCase()}
                     </div>
                   )}
 
                   <div className="profile-details">
-
                     <h2>{profileName}</h2>
 
                     <p className="profile-username">
@@ -768,7 +692,6 @@ function App() {
                         {profileBio}
                       </p>
                     )}
-
                   </div>
 
                 </div>
@@ -776,17 +699,14 @@ function App() {
                 <div className="profile-counts">
 
                   <div className="profile-count">
-
                     <strong>
                       {statistics.followers >= 1000000
                         ? `${(
-                            statistics.followers /
-                            1000000
+                            statistics.followers / 1000000
                           ).toFixed(1)}M`
                         : statistics.followers >= 1000
                         ? `${(
-                            statistics.followers /
-                            1000
+                            statistics.followers / 1000
                           ).toFixed(1)}k`
                         : formatNumber(
                             statistics.followers
@@ -794,21 +714,16 @@ function App() {
                     </strong>
 
                     <span>Followers</span>
-
                   </div>
 
                   <div className="profile-count-divider"></div>
 
                   <div className="profile-count">
-
                     <strong>
-                      {formatNumber(
-                        profilePostsCount
-                      )}
+                      {formatNumber(profilePostsCount)}
                     </strong>
 
                     <span>Posts</span>
-
                   </div>
 
                 </div>
@@ -816,7 +731,6 @@ function App() {
               </div>
             </section>
 
-            {/* KEY PERFORMANCE METRICS */}
             <section className="container metrics-section">
 
               <div className="metrics-header">
@@ -825,23 +739,11 @@ function App() {
 
               <div className="metrics-grid">
 
-                {/* ENGAGEMENT RATE */}
                 <div className="metric-card metric-er">
-
                   <div className="metric-label">
-
-                    <span className="metric-icon">
-                      ↗
-                    </span>
-
-                    <span>
-                      Engagement Rate
-                    </span>
-
-                    <span className="info-icon">
-                      ⓘ
-                    </span>
-
+                    <span className="metric-icon">↗</span>
+                    <span>Engagement Rate</span>
+                    <span className="info-icon">ⓘ</span>
                   </div>
 
                   <strong className="metric-value">
@@ -851,112 +753,75 @@ function App() {
                   <span className="metric-subtitle">
                     Based on available posts
                   </span>
-
                 </div>
 
-                {/* LIKES */}
                 <div className="metric-card">
-
                   <div className="metric-label">
-
-                    <span className="metric-icon pink">
-                      ♡
-                    </span>
-
+                    <span className="metric-icon pink">♡</span>
                     <span>Avg Likes</span>
-
                   </div>
 
                   <strong className="metric-number">
                     {formatNumber(
-                      Math.round(
-                        statistics.averageLikes
-                      )
+                      Math.round(statistics.averageLikes)
                     )}
                   </strong>
 
                   <span className="metric-subtitle">
                     Per post
                   </span>
-
                 </div>
 
-                {/* COMMENTS */}
                 <div className="metric-card">
-
                   <div className="metric-label">
-
-                    <span className="metric-icon blue">
-                      ♡
-                    </span>
-
+                    <span className="metric-icon blue">♡</span>
                     <span>Avg Comments</span>
-
                   </div>
 
                   <strong className="metric-number">
                     {formatNumber(
-                      Math.round(
-                        statistics.averageComments
-                      )
+                      Math.round(statistics.averageComments)
                     )}
                   </strong>
 
                   <span className="metric-subtitle">
                     Per post
                   </span>
-
                 </div>
 
-                {/* PLAYS */}
                 <div className="metric-card">
-
                   <div className="metric-label">
-
-                    <span className="metric-icon green">
-                      ▷
-                    </span>
-
+                    <span className="metric-icon green">▷</span>
                     <span>Avg Plays</span>
-
                   </div>
 
                   <strong className="metric-number">
                     {formatNumber(
-                      Math.round(
-                        statistics.averageViews
-                      )
+                      Math.round(statistics.averageViews)
                     )}
                   </strong>
 
                   <span className="metric-subtitle">
                     Video posts only
                   </span>
-
                 </div>
 
               </div>
-
             </section>
 
-            {/* BENCHMARK */}
             <section className="container benchmark-section">
-
               <div className="benchmark-card">
 
-                <h2>
-                  Engagement Rate Benchmark
-                </h2>
+                <h2>Engagement Rate Benchmark</h2>
 
                 <p className="benchmark-description">
-                  Engagement rate based on the
-                  available Instagram posts.
+                  Engagement rate based on the available
+                  Instagram posts.
                 </p>
 
                 <div className="benchmark-content">
 
                   <div className="benchmark-rate">
-
                     <strong>
                       {statistics.engagementRate.toFixed(2)}%
                     </strong>
@@ -964,11 +829,9 @@ function App() {
                     <span>
                       Current Engagement Rate
                     </span>
-
                   </div>
 
                   <div className="benchmark-bar">
-
                     <div
                       className="benchmark-progress"
                       style={{
@@ -978,7 +841,6 @@ function App() {
                         )}%`,
                       }}
                     ></div>
-
                   </div>
 
                   <div className="benchmark-scale">
@@ -992,66 +854,41 @@ function App() {
                 </div>
 
               </div>
-
             </section>
 
-            {/* POSTS */}
             {posts.length > 0 && (
               <section className="posts-section container">
 
                 <div className="posts-header">
-
                   <div>
                     <h2>Instagram Posts</h2>
 
                     <p>
-                      Recent posts from this
-                      Instagram profile
+                      Recent posts from this Instagram
+                      profile
                     </p>
                   </div>
 
                   <span>
                     {posts.length} posts found
                   </span>
-
                 </div>
 
                 <div className="posts-grid">
 
                   {posts.map((post, index) => {
 
-                    const image =
-                      getPostImage(post);
-
-                    const likes =
-                      getLikes(post);
-
-                    const comments =
-                      getComments(post);
-
-                    const views =
-                      getViews(post);
-
-                    const saved =
-                      getSaved(post);
-
-                    const reposts =
-                      getReposts(post);
-
-                    const caption =
-                      getCaption(post);
-
-                    const postUrl =
-                      getPostUrl(post);
-
-                    const postType =
-                      getPostType(post);
-
-                    const timeAgo =
-                      getTimeAgo(post);
-
-                    const postER =
-                      getPostEngagement(post);
+                    const image = getPostImage(post);
+                    const likes = getLikes(post);
+                    const comments = getComments(post);
+                    const views = getViews(post);
+                    const saved = getSaved(post);
+                    const reposts = getReposts(post);
+                    const caption = getCaption(post);
+                    const postUrl = getPostUrl(post);
+                    const postType = getPostType(post);
+                    const timeAgo = getTimeAgo(post);
+                    const postER = getPostEngagement(post);
 
                     return (
                       <article
@@ -1069,9 +906,7 @@ function App() {
                           {image ? (
                             <img
                               src={image}
-                              alt={`Instagram post ${
-                                index + 1
-                              }`}
+                              alt={`Instagram post ${index + 1}`}
                               className="post-image"
                               loading="lazy"
                               onError={(e) => {
@@ -1097,22 +932,15 @@ function App() {
 
                         {views > 0 && (
                           <div className="plays-row">
-
                             <span className="plays-badge">
-                              ▶{" "}
-                              {formatNumber(
-                                views
-                              )}{" "}
-                              plays
+                              ▶ {formatNumber(views)} plays
                             </span>
-
                           </div>
                         )}
 
                         <div className="post-content">
 
                           <div className="post-top-row">
-
                             <span className="post-time">
                               {timeAgo}
                             </span>
@@ -1120,59 +948,37 @@ function App() {
                             <span className="post-er">
                               {postER.toFixed(2)}% ER
                             </span>
-
                           </div>
 
                           <div className="post-engagement">
 
                             <span className="engagement-item like">
                               ♡
-                              <b>
-                                {formatNumber(
-                                  likes
-                                )}
-                              </b>
+                              <b>{formatNumber(likes)}</b>
                             </span>
 
                             <span className="engagement-item comment">
                               ♡
-                              <b>
-                                {formatNumber(
-                                  comments
-                                )}
-                              </b>
+                              <b>{formatNumber(comments)}</b>
                             </span>
 
                             <span className="engagement-item saved">
                               🔖
-                              <b>
-                                {formatNumber(
-                                  saved
-                                )}
-                              </b>
+                              <b>{formatNumber(saved)}</b>
                             </span>
 
                             <span className="engagement-item repost">
                               🔁
-                              <b>
-                                {formatNumber(
-                                  reposts
-                                )}
-                              </b>
+                              <b>{formatNumber(reposts)}</b>
                             </span>
 
                           </div>
 
                           {caption && (
                             <p className="post-caption">
-
                               {caption.length > 150
-                                ? `${caption.substring(
-                                    0,
-                                    150
-                                  )}...`
+                                ? `${caption.substring(0, 150)}...`
                                 : caption}
-
                             </p>
                           )}
 
@@ -1196,10 +1002,8 @@ function App() {
 
                 </div>
 
-                {/* LOAD MORE */}
                 {nextCursor && (
                   <div className="load-more-wrapper">
-
                     <button
                       className="load-more"
                       onClick={handleLoadMore}
@@ -1209,25 +1013,20 @@ function App() {
                         ? "Loading..."
                         : "Load More"}
                     </button>
-
                   </div>
                 )}
 
               </section>
             )}
 
-            {/* NO POSTS */}
             {posts.length === 0 && !error && (
               <section className="container no-posts">
-
                 <h2>No posts available</h2>
 
                 <p>
-                  The profile was found, but
-                  the Instagram API did not
-                  return any post data.
+                  The profile was found, but the Instagram
+                  API did not return any post data.
                 </p>
-
               </section>
             )}
           </>
@@ -1235,11 +1034,8 @@ function App() {
 
       </main>
 
-      {/* FOOTER */}
       <footer className="footer">
-        <p>
-          Instagram Engagement Calculator
-        </p>
+        <p>Instagram Engagement Calculator</p>
       </footer>
 
     </div>
